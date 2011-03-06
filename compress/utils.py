@@ -71,7 +71,7 @@ def media_root_for_fetch(filename):
     return os.path.join(django_settings.MEDIA_ROOT, filename)
 
 def media_url(url, prefix=None):
-    if prefix:
+    if prefix is not None:
         return prefix + urlquote(url)
     if django_settings.COMPRESS_USE_STATIC:
         return django_settings.STATIC_URL + urlquote(url)
