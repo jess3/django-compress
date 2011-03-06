@@ -11,7 +11,9 @@ class CSSTidyFilter(FilterBase):
         
         for k, v in COMPRESS_CSSTIDY_SETTINGS.items():
             tidy.setSetting(k, v)
-
+        
+        print css
+        
         tidy.parse(css)
 
         r = tidy.Output('string')

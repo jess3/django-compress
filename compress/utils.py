@@ -58,12 +58,25 @@ def media_root(filename):
     """
     Return the full path to ``filename``. ``filename`` is a relative path name in MEDIA_ROOT
     """
+    if django_settings.COMPRESS_USE_STATIC:
+        prefix = django_settings.STATIC_ROOT
+    else:
+        prefix = django_settings.MEDIA_ROOT
+    return os.path.join(prefix, filename)
+    
+def media_root_for_fetch(filename):
+    if django_settings.COMPRESS_USE_STATIC:
+        from django.contrib.staticfiles import finders
+        return finders.find(filename)
     return os.path.join(django_settings.MEDIA_ROOT, filename)
 
 def media_url(url, prefix=None):
     if prefix:
         return prefix + urlquote(url)
+    if django_settings.COMPRESS_USE_STATIC:
+        return django_settings.STATIC_URL + urlquote(url)
     return django_settings.MEDIA_URL + urlquote(url)
+        
 
 def concat(filenames, separator=''):
     """
@@ -71,7 +84,7 @@ def concat(filenames, separator=''):
     """
     r = ''
     for filename in filenames:
-        fd = open(media_root(filename), 'rb')
+        fd = open(media_root_for_fetch(filename), 'rb')
         r += fd.read()
         r += separator
         fd.close()
